@@ -1,23 +1,57 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
 
 function App() {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
+
+  const addTask = () => {
+    setTasks([...tasks, { task: newTask, completed: false }]);
+    setNewTask('');
+    console.log(tasks);
+  };
+
+  const deleteTask = (taskToDelete) => {
+    const filteredTasks = tasks.filter((task) => task.task !== taskToDelete);
+    setTasks(filteredTasks);
+  };
+
+  const completeTask = (taskToComplete) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.task === taskToComplete) {
+        return { ...task, completed: true };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Todo List</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Add a new task"
+          value={newTask}
+          onChange={(event) => setNewTask(event.target.value)}
+        />
+        <button onClick={addTask}>Add Task</button>
+      </div>
+      <hr />
+      <ul>
+        {tasks.map((task, index) => {
+          return (
+            <div id="task-item" key={index}>
+              <li>
+                {task.task} {task.completed && '(Completed)'}
+              </li>
+              <button onClick={() => completeTask(task.task)}>Complete</button>
+              <button onClick={() => deleteTask(task.task)}>Delete</button>
+            </div>
+          );
+        })}
+      </ul>
     </div>
   );
 }
